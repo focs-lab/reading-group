@@ -365,17 +365,17 @@ Proof. simpl. reflexivity.  Qed.
     return [true] when all of its inputs are [true], and [false]
     otherwise. *)
 
-Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool :=
+  andb b1 (andb b2 b3).
 
 Example test_andb31:                 (andb3 true true true) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_andb32:                 (andb3 false true true) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_andb33:                 (andb3 true false true) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_andb34:                 (andb3 true true false) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 (** [] *)
 
 (* ================================================================= *)
@@ -488,6 +488,13 @@ Definition isred (c : color) : bool :=
   | white => false
   | primary red => true
   | primary _ => false
+  end.
+
+(* Here's an alternative definition. *)
+Definition isred' (c : color) : bool :=
+  match c with
+  | primary red => true
+  | _ => false
   end.
 
 (** The pattern "[primary _]" here is shorthand for "the constructor
@@ -816,14 +823,35 @@ Fixpoint exp (base power : nat) : nat :=
     factorial was not found in the current environment," it means
     you've forgotten the [:=]. *)
 
-Fixpoint factorial (n:nat) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint factorial (n:nat) : nat :=
+  match n with
+  | O => S O
+  | S n' => mult n (factorial n')
+  end.
 
 Example test_factorial1:          (factorial 3) = 6.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_factorial2:          (factorial 5) = (mult 10 12).
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 (** [] *)
+
+(* Here's a tail recursive version of the factorial function. *)
+Fixpoint factorial'_helper (n acc : nat) : nat :=
+  match n with
+  | O => acc
+  | S n' => factorial'_helper n' (mult n acc)
+  end.
+
+Definition factorial' (n : nat) : nat :=
+  match n with
+  | O => S O
+  | S _ => factorial'_helper n 1
+  end.
+
+Example test_factorial1':          (factorial' 3) = 6.
+Proof. simpl. reflexivity.  Qed.
+Example test_factorial2':          (factorial' 5) = (mult 10 12).
+Proof. simpl. reflexivity.  Qed.
 
 (** Again, we can make numerical expressions easier to read and write
     by introducing notations for addition, subtraction, and
@@ -915,16 +943,37 @@ Proof. simpl. reflexivity.  Qed.
     function.  (It can be done with just one previously defined
     function, but you can use two if you want.) *)
 
-Definition ltb (n m : nat) : bool
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition ltb (n m : nat) : bool :=
+  negb (leb m n).
 
 Notation "x <? y" := (ltb x y) (at level 70) : nat_scope.
 
 Example test_ltb1:             (ltb 2 2) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_ltb2:             (ltb 2 4) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_ltb3:             (ltb 4 2) = false.
+Proof. simpl. reflexivity.  Qed.
+
+(* Here's an alternative definition. *)
+Fixpoint ltb' (n m : nat) : bool :=
+  match n with
+  | O => match m with
+         | O => false
+         | S _ => true
+         end
+  | S n' => match m with
+            | O => false
+            | S m' => ltb' n' m'
+            end
+  end.
+
+(* Observe that [simpl] works now. *)
+Example test_ltb1':             (ltb' 2 2) = false.
+Proof. simpl. reflexivity.  Qed.
+Example test_ltb2':             (ltb' 2 4) = true.
+(* FILL IN HERE *) Admitted.
+Example test_ltb3':             (ltb' 4 2) = false.
 (* FILL IN HERE *) Admitted.
 (** [] *)
 
