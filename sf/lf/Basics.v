@@ -972,9 +972,9 @@ Fixpoint ltb' (n m : nat) : bool :=
 Example test_ltb1':             (ltb' 2 2) = false.
 Proof. simpl. reflexivity.  Qed.
 Example test_ltb2':             (ltb' 2 4) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_ltb3':             (ltb' 4 2) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -999,7 +999,8 @@ Example test_ltb3':             (ltb' 4 2) = false.
 
 Theorem plus_O_n : forall n : nat, 0 + n = n.
 Proof.
-  intros n. simpl. reflexivity.  Qed.
+  intros n. simpl. reflexivity.
+Qed.
 
 (** (You may notice that the above statement looks different if
     you look at the [.v] file in your IDE than it does if you view the
@@ -1135,7 +1136,10 @@ Proof.
 Theorem plus_id_exercise : forall n m o : nat,
   n = m -> m = o -> n + m = m + o.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m o H1 H2.
+  rewrite -> H1. (* replace [n] with [m] *)
+  rewrite -> H2. (* replace [m] with [o] *)
+  reflexivity.  Qed.
 (** [] *)
 
 (** The [Admitted] command tells Coq that we want to skip trying
@@ -1186,7 +1190,11 @@ Proof.
 Theorem mult_n_1 : forall p : nat,
   p * 1 = p.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros p.
+  rewrite <- mult_n_Sm.
+  rewrite <- mult_n_O.
+  reflexivity.
+Qed.
 
 (** [] *)
 
@@ -1229,7 +1237,8 @@ Theorem plus_1_neq_0 : forall n : nat,
 Proof.
   intros n. destruct n as [| n'] eqn:E.
   - reflexivity.
-  - reflexivity.   Qed.
+  - reflexivity.
+Qed.
 
 (** The [destruct] generates _two_ subgoals, which we must then
     prove, separately, in order to get Coq to accept the theorem.
@@ -1386,7 +1395,15 @@ Qed.
 Theorem andb_true_elim2 : forall b c : bool,
   andb b c = true -> c = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros b c. destruct b eqn:Eb.
+  - destruct c eqn:Ec.
+    + reflexivity.
+    + intros H. rewrite <- H. simpl. reflexivity.
+  - destruct c eqn:Ec.
+    + reflexivity.
+    + intros H. rewrite <- H. simpl. reflexivity.
+Qed.
+
 (** [] *)
 
 (** Before closing the chapter, let's mention one final
@@ -1427,7 +1444,10 @@ Qed.
 Theorem zero_nbeq_plus_1 : forall n : nat,
   0 =? (n + 1) = false.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros [| n].
+  - reflexivity.
+  - reflexivity.
+Qed. 
 (** [] *)
 
 (* ================================================================= *)
@@ -1532,7 +1552,9 @@ Theorem identity_fn_applied_twice :
   (forall (x : bool), f x = x) ->
   forall (b : bool), f (f b) = b.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros f Hf b.
+  rewrite Hf. rewrite Hf. reflexivity.
+Qed.
 
 (** [] *)
 
@@ -1562,7 +1584,11 @@ Theorem andb_eq_orb :
   (andb b c = orb b c) ->
   b = c.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros b c.
+  destruct b eqn:Eb.
+  - simpl. intros H. rewrite H. reflexivity. 
+  - simpl. intros H. rewrite H. reflexivity.
+Qed.
 
 (** [] *)
 
